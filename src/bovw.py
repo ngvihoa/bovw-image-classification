@@ -2,13 +2,12 @@
 
 
 import os, sys
-
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from sklearn.cluster import MiniBatchKMeans
 import config
+import src.sift as sift
 import numpy as np
-import sift
 
 def image_to_bovw(descriptors, kmeans: MiniBatchKMeans, vocab_size = config.DEFAULT_VOCAB_SIZE):
     """
