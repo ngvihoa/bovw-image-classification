@@ -29,8 +29,6 @@ def save_vocabulary(kmeans, vocab_size = config.DEFAULT_VOCAB_SIZE):
     joblib.dump(kmeans, path)
     print(f"Vocabulary saved to {path}")
 
-
-
 def load_vocabulary(vocab_size = config.DEFAULT_VOCAB_SIZE):
     path = os.path.join(config.VOCAB_DIR, f"vocab_{vocab_size}.joblib")
     print(f"Loading vocabulary from {path}")
