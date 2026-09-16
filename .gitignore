@@ -1,4 +1,4 @@
 .venv
 data/raw/*
-.docs
+docs/*
 __pycache__
