@@ -47,8 +47,27 @@ def collect_training_descriptors(
     return lst
 
 
-# if __name__ == "__main__":
-#     from dataset import load_dataset
-#     X_train, X_test, y_train, y_test = load_dataset()
-#     descriptors = collect_training_descriptors(X_train[:10])
-#     print(f"Total descriptors: {len(descriptors)}")
+def extract_sift_spm(image_path, max_dim=400, contrast_threshold=0.03, edge_threshold=10):
+    """
+    Trích xuất SIFT descriptors kèm tọa độ không gian chuẩn hóa [0, 1] x [0, 1] cho mô hình v2 (SPM).
+    Returns:
+    - descriptors: np.ndarray shape (N, 128)
+    - coordinates: np.ndarray shape (N, 2) với x_norm, y_norm in [0, 1]
+    """
+    img = cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        return None, None
+    
+    h, w = img.shape[:2]
+    if max(h, w) > max_dim:
+        scale = max_dim / max(h, w)
+        img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_AREA)
+        h, w = img.shape[:2]
+        
+    sift_spm = cv2.SIFT_create(contrastThreshold=contrast_threshold, edgeThreshold=edge_threshold)
+    kps, desc = sift_spm.detectAndCompute(img, None)
+    if desc is None or len(desc) == 0:
+        return None, None
+        
+    coords = np.array([[kp.pt[0] / w, kp.pt[1] / h] for kp in kps], dtype=np.float32)
+    return desc, coords
